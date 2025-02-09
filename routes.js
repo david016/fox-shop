@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
 
 router.get("/product", async (req, res) => {
   const products = await productService.getProducts();
-  res.json(db.data.products);
+  res.json(products);
 });
 
 router.get("/product/:id", async (req, res) => {
