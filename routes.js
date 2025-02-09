@@ -23,6 +23,10 @@ router.get("/product/:id", async (req, res) => {
 
 router.post("/product", async (req, res) => {
   const { name, price, count } = req.body;
+  if (!name || !price || !count) {
+    res.status(400).send("Name, price and count are required");
+    return;
+  }
   const newProduct = { id: Date.now(), name, price, count };
   const addedProduct = await productService.addProduct(newProduct);
   res.status(201).json(addedProduct);
