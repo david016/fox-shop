@@ -43,39 +43,17 @@ const router = express.Router();
  * @swagger
  * /product:
  *   get:
- *    summary: Returns the list of all the products
- *    tags: [Product]
- *    responses:
- *     200:
- *      description: The list of the products
- *      content:
- *       application/json:
- *        schema:
- *         type: array
- *         items:
- *           $ref: '#/components/schemas/Product'
- */
-router.get("/product", async (req, res) => {
-  const products = await productService.getProducts();
-  res.json(products);
-});
-
-/**
- * @swagger
- * /product/{id}:
- *   get:
- *     summary: Get the product by id
+ *     summary: Get the products (all or filtered by name)
  *     tags: [Product]
  *     parameters:
- *       - in: path
- *         name: id
+ *       - in: query
+ *         name: name
  *         schema:
- *           type: integer
- *         required: true
- *         description: Numeric ID of the product to get
+ *           type: string
+ *         description: Name of the product to get
  *     responses:
  *       200:
- *         description: The product description by id
+ *         description: Product(s) retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -83,11 +61,16 @@ router.get("/product", async (req, res) => {
  *       404:
  *         description: The product was not found
  */
-router.get("/product/:id", async (req, res) => {
-  const product = await productService.getProductById(req.params.id);
+router.get("/product", async (req, res) => {
+  const { name } = req.query;
+  if (!name) {
+    const products = await productService.getProducts();
+    return res.json(products);
+  }
+
+  const product = await productService.getProductByName(name);
   if (!product) {
-    res.status(404).send("Product not found");
-    return;
+    return res.status(404).send("Product not found");
   }
   res.json(product);
 });
@@ -163,8 +146,7 @@ router.post("/product", async (req, res) => {
 router.put("/product/:id", async (req, res) => {
   const { price } = req.body;
   if (!price) {
-    res.status(400).send("Price is required");
-    return;
+    return res.status(400).send("Price is required");
   }
 
   const updatedProduct = await productService.updateProductPrice(
@@ -172,8 +154,7 @@ router.put("/product/:id", async (req, res) => {
     price
   );
   if (!updatedProduct) {
-    res.status(404).send("Product not found");
-    return;
+    return res.status(404).send("Product not found");
   }
   res.json(updatedProduct);
 });
@@ -204,8 +185,7 @@ router.put("/product/:id", async (req, res) => {
 router.delete("/product/:id", async (req, res) => {
   const deletedProduct = await productService.deleteProduct(req.params.id);
   if (!deletedProduct) {
-    res.status(404).send("Product not found");
-    return;
+    return res.status(404).send("Product not found");
   }
   res.json(deletedProduct);
 });

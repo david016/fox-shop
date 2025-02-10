@@ -5,9 +5,10 @@ async function getProducts() {
   return db.data.products;
 }
 
-async function getProductById(id) {
-  await db.read();
-  return db.data.products.find((product) => product.id == id);
+async function getProductByName(name) {
+  return await getProducts().then((products) =>
+    products.find((product) => product.name == name)
+  );
 }
 
 async function addProduct(product) {
@@ -41,7 +42,7 @@ async function deleteProduct(id) {
 
 export default {
   getProducts,
-  getProductById,
+  getProductByName,
   addProduct,
   updateProductPrice,
   deleteProduct,
