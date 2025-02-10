@@ -30,6 +30,16 @@ const router = express.Router();
  *         name: "Product name"
  *         price: 100
  *         count: 10
+ *     PriceHistory:
+ *       type: array
+ *       items:
+ *         type: object
+ *         additionalProperties:
+ *           type: number
+ *       example:
+ *         - { "Initial price": 15 }
+ *         - { "2025-02-10T00:23:05.681Z - 2025-02-10T00:25:30.163Z": 10 }
+ *         - { "2025-02-10T00:25:30.163Z - Present": 20 }
  */
 
 /**
@@ -219,6 +229,37 @@ router.delete("/products/:id", async (req, res) => {
     return res.status(404).send("Product not found");
   }
   res.json(deletedProduct);
+});
+
+/**
+ * @swagger
+ * /products/{id}/price-history:
+ *   get:
+ *     summary: Get the product price history by id
+ *     tags: [Product]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *           required: true
+ *           description: Numeric ID of the product to get price history
+ *     responses:
+ *       200:
+ *         description: The product price history by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/PriceHistory"
+ *       404:
+ *         description: The product was not found
+ */
+router.get("/products/:id/price-history", async (req, res) => {
+  const priceHistory = await productService.getPriceHistory(req.params.id);
+  if (!priceHistory) {
+    return res.status(404).send(`The product was not found`);
+  }
+  res.json(priceHistory);
 });
 
 export default router;
