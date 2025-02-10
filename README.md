@@ -17,7 +17,7 @@ Fox Shop is a simple application that allows to manage products and track price 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/fox-shop.git
+   git clone https://github.com/david016/fox-shop.git
    cd fox-shop
 
    ```
