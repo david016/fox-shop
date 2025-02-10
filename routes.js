@@ -41,7 +41,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /product:
+ * /products:
  *   get:
  *     summary: Get the products (all or filtered by name)
  *     tags: [Product]
@@ -61,7 +61,7 @@ const router = express.Router();
  *       404:
  *         description: The product was not found
  */
-router.get("/product", async (req, res) => {
+router.get("/products", async (req, res) => {
   const { name } = req.query;
   if (!name) {
     const products = await productService.getProducts();
@@ -77,7 +77,7 @@ router.get("/product", async (req, res) => {
 
 /**
  * @swagger
- * /product:
+ * /products:
  *   post:
  *    summary: Create a new product
  *    tags: [Product]
@@ -97,7 +97,7 @@ router.get("/product", async (req, res) => {
  *      400:
  *       description: Name, price and count are required
  */
-router.post("/product", async (req, res) => {
+router.post("/products", async (req, res) => {
   const { name, price, count } = req.body;
   if (!name || !price || !count) {
     res.status(400).send("Name, price and count are required");
@@ -110,7 +110,7 @@ router.post("/product", async (req, res) => {
 
 /**
  * @swagger
- * /product/{id}:
+ * /products/{id}:
  *   put:
  *    summary: Update the product price by id
  *    tags: [Product]
@@ -143,7 +143,7 @@ router.post("/product", async (req, res) => {
  *      404:
  *        description: The product was not found
  */
-router.put("/product/:id", async (req, res) => {
+router.put("/products/:id", async (req, res) => {
   const { price } = req.body;
   if (!price) {
     return res.status(400).send("Price is required");
@@ -161,7 +161,7 @@ router.put("/product/:id", async (req, res) => {
 
 /**
  * @swagger
- * /product/{id}:
+ * /products/{id}:
  *   delete:
  *     summary: Remove the product by id
  *     tags: [Product]
@@ -182,7 +182,7 @@ router.put("/product/:id", async (req, res) => {
  *       404:
  *         description: The product was not found
  */
-router.delete("/product/:id", async (req, res) => {
+router.delete("/products/:id", async (req, res) => {
   const deletedProduct = await productService.deleteProduct(req.params.id);
   if (!deletedProduct) {
     return res.status(404).send("Product not found");

@@ -23,6 +23,7 @@ const specs = swaggerJsdoc(options);
 
 function setupSwagger(app, port) {
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+  console.log(`Swagger is running on http://localhost:${port}/api-docs`);
 }
 
 export default setupSwagger;
