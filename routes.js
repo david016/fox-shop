@@ -77,6 +77,38 @@ router.get("/products", async (req, res) => {
 
 /**
  * @swagger
+ * /products/{id}:
+ *   get:
+ *     summary: Get the product by id
+ *     tags: [Product]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Numeric ID of the product to get
+ *     responses:
+ *       200:
+ *         description: The product description by id
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       404:
+ *         description: The product was not found
+ */
+router.get("/products/:id", async (req, res) => {
+  const product = await productService.getProductById(req.params.id);
+  if (!product) {
+    res.status(404).send("Product not found");
+    return;
+  }
+  res.json(product);
+});
+
+/**
+ * @swagger
  * /products:
  *   post:
  *    summary: Create a new product

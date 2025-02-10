@@ -11,6 +11,11 @@ async function getProductByName(name) {
   );
 }
 
+async function getProductById(id) {
+  await db.read();
+  return db.data.products.find((product) => product.id == id);
+}
+
 async function addProduct(product) {
   await db.read();
   db.data.products.push(product);
