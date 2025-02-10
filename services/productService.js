@@ -23,15 +23,42 @@ async function addProduct(product) {
   return product;
 }
 
-async function updateProductPrice(id, price) {
+async function updateProduct(id, requestBody) {
+  const { name, price, count } = requestBody;
+
   await db.read();
+
   const index = db.data.products.findIndex((product) => product.id == id);
   if (index === -1) {
     return null;
   }
-  db.data.products[index].price = price;
+
+  const product = db.data.products[index];
+
+  if (name) {
+    product.name = name;
+  }
+
+  if (price) {
+    product.price = price;
+
+    const priceChange = {
+      productId: id,
+      productName: product.name,
+      previousPrice: product.price,
+      newPrice: price,
+      changedAt: new Date().toISOString(),
+    };
+
+    db.data.changes.push(priceChange);
+  }
+
+  if (count) {
+    product.count = count;
+  }
+
   await db.write();
-  return db.data.products[index];
+  return product;
 }
 
 async function deleteProduct(id) {

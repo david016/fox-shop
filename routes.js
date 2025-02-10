@@ -143,8 +143,8 @@ router.post("/products", async (req, res) => {
 /**
  * @swagger
  * /products/{id}:
- *   put:
- *    summary: Update the product price by id
+ *   patch:
+ *    summary: Update the product by id
  *    tags: [Product]
  *    parameters:
  *      - in: path
@@ -160,11 +160,15 @@ router.post("/products", async (req, res) => {
  *          schema:
  *            type: object
  *            properties:
+ *              name:
+ *                type: string
+ *                description: The new name of the product
  *              price:
  *                type: number
  *                description: The new price of the product
- *            required:
- *              - price
+ *              count:
+ *                type: integer
+ *                description: The new count of the product
  *    responses:
  *      200:
  *        description: The product was successfully updated
@@ -175,15 +179,10 @@ router.post("/products", async (req, res) => {
  *      404:
  *        description: The product was not found
  */
-router.put("/products/:id", async (req, res) => {
-  const { price } = req.body;
-  if (!price) {
-    return res.status(400).send("Price is required");
-  }
-
-  const updatedProduct = await productService.updateProductPrice(
+router.patch("/products/:id", async (req, res) => {
+  const updatedProduct = await productService.updateProduct(
     req.params.id,
-    price
+    req.body
   );
   if (!updatedProduct) {
     return res.status(404).send("Product not found");
