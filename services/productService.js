@@ -24,37 +24,33 @@ async function addProduct(product) {
 }
 
 async function updateProduct(id, requestBody) {
-  const { name, price, count } = requestBody;
-
   await db.read();
 
   const index = db.data.products.findIndex((product) => product.id == id);
-  if (index === -1) {
-    return null;
-  }
+  if (index === -1) return null;
 
   const product = db.data.products[index];
 
-  if (name) {
-    product.name = name;
+  const previousPrice = product.price;
+
+  if (requestBody.name !== undefined) {
+    product.name = requestBody.name;
   }
 
-  if (price) {
-    product.price = price;
+  if (requestBody.price !== undefined && requestBody.price !== previousPrice) {
+    product.price = requestBody.price;
 
-    const priceChange = {
+    db.data.changes.push({
       productId: id,
       productName: product.name,
-      previousPrice: product.price,
-      newPrice: price,
+      previousPrice,
+      newPrice: requestBody.price,
       changedAt: new Date().toISOString(),
-    };
-
-    db.data.changes.push(priceChange);
+    });
   }
 
-  if (count) {
-    product.count = count;
+  if (requestBody.count !== undefined) {
+    product.count = requestBody.count;
   }
 
   await db.write();
